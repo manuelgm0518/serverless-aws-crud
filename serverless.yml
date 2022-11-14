@@ -1,0 +1,61 @@
+org: manuelgm
+app: etpay-challenge
+frameworkVersion: "3"
+service: transfers
+
+plugins:
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  environment:
+    TRANSFERS_TABLE_NAME: TransfersTable
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+      Resource: "arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.TRANSFERS_TABLE_NAME}"
+
+functions:
+  create:
+    handler: src/create.handler
+    events:
+      - httpApi:
+          path: /${self:service}
+          method: POST
+  read:
+    handler: src/read.handler
+    events:
+      - httpApi:
+          path: /${self:service}
+          method: GET
+      - httpApi:
+          path: /${self:service}/{id}
+          method: GET
+  update:
+    handler: src/update.handler
+    events:
+      - httpApi:
+          path: /${self:service}/{id}
+          method: PATCH
+  delete:
+    handler: src/delete.handler
+    events:
+      - httpApi:
+          path: /${self:service}/{id}
+          method: DELETE
+
+resources:
+  Resources:
+    TransfersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TRANSFERS_TABLE_NAME}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH

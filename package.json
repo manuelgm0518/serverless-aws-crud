@@ -1,0 +1,12 @@
+{
+  "name": "etpay-challenge",
+  "version": "1.0.0",
+  "description": "Example CRUD made with Serverless Framework",
+  "dependencies": {
+    "aws-sdk": "^2.1253.0",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "serverless-offline": "^11.3.0"
+  }
+}
